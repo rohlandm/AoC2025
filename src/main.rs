@@ -28,12 +28,14 @@ pub fn main() {
         _ => panic!(),
     };
 
-    match solver.solve_part1() {
+    let input = vec!["1", "2"];
+
+    match solver.solve_part1(&input) {
         Ok(i) => println!("🛷 The result of part 1 is {i}."),
         Err(e) => println!("{}", e),
     }
 
-    match solver.solve_part2() {
+    match solver.solve_part2(&input) {
         Ok(i) => println!("🛷 The result of part 2 is {i}."),
         Err(e) => println!("{}", e),
     }
