@@ -9,8 +9,13 @@ use crate::aoc::{
 use std::env;
 
 pub fn main() {
-    let day: u8 = env::args().find_map(|arg| arg.parse().ok()).unwrap();
-    println!("🎄 Selected day: {day}");
+    let day: u8 = match env::args().find_map(|arg| arg.parse().ok()) {
+        Some(i) => i,
+        None => {
+            eprintln!("🚨 Missing or malformed day argument");
+            return;
+        }
+    };
 
     let solver: Box<dyn DaySolver> = match day {
         1 => Box::new(Day1Solver),
@@ -25,11 +30,21 @@ pub fn main() {
         10 => Box::new(Day10Solver),
         11 => Box::new(Day11Solver),
         12 => Box::new(Day12Solver),
-        _ => panic!(),
+        _ => {
+            eprintln!("🚨 Day argument should be between 1 and 12");
+            return;
+        }
     };
 
-    let input = filereader::read_file(&format!("input/{}.txt", day));
+    let input = match filereader::read_file(&format!("input/{}.txt", day)) {
+        Ok(val) => val,
+        Err(e) => {
+            eprintln!("🚨 Error reading input: {}", e);
+            return;
+        }
+    };
 
+    println!("🎄 Selected day: {day}");
     match solver.solve_part1(&input) {
         Ok(i) => println!("🛷 The result of part 1 is {i}."),
         Err(e) => println!("{}", e),
