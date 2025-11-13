@@ -13,11 +13,11 @@ pub fn main() {
 
     match solver.solve_part1() {
         Ok(i) => println!("🎅🏼 The result of part 1 is {i}."),
-        Err(_) => println!("😱 Part 1 is not yet implemented!"),
+        Err(e) => println!("{}", e),
     }
 
     match solver.solve_part2() {
         Ok(i) => println!("🎅🏼 The result of part 2 is {i}."),
-        Err(_) => println!("😱 Part 2 is not yet implemented!"),
+        Err(e) => println!("{}", e),
     }
 }
