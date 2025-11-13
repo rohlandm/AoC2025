@@ -1,12 +1,8 @@
-use std::fs;
+use std::{fs, io::Error};
 
-pub fn read_file(file_name: &str) -> Vec<String> {
+pub fn read_file(file_name: &str) -> Result<Vec<String>, Error> {
     fs::read_to_string(file_name)
-        .expect("File reading error")
-        .trim()
-        .split("\n")
-        .map(|s| String::from(s))
-        .collect()
+        .map(|raw| raw.trim().split("\n").map(|s| String::from(s)).collect())
 }
 
 #[cfg(test)]
@@ -16,6 +12,6 @@ mod tests {
     #[test]
     fn test_read_file() {
         let input = read_file("input/test.txt");
-        assert_eq!(5, input.len())
+        assert_eq!(5, input.unwrap().len())
     }
 }
