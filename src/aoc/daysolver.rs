@@ -6,7 +6,3 @@ pub trait DaySolver {
         Err("😱 Part 2 not yet implemented!")
     }
 }
-
-pub struct DefaultDaySolver;
-
-impl DaySolver for DefaultDaySolver {}
