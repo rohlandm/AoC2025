@@ -29,12 +29,12 @@ pub fn main() {
     };
 
     match solver.solve_part1() {
-        Ok(i) => println!("🎅🏼 The result of part 1 is {i}."),
+        Ok(i) => println!("🛷 The result of part 1 is {i}."),
         Err(e) => println!("{}", e),
     }
 
     match solver.solve_part2() {
-        Ok(i) => println!("🎅🏼 The result of part 2 is {i}."),
+        Ok(i) => println!("🛷 The result of part 2 is {i}."),
         Err(e) => println!("{}", e),
     }
 }
