@@ -11,3 +11,4 @@ pub mod day7solver;
 pub mod day8solver;
 pub mod day9solver;
 pub mod daysolver;
+pub mod filereader;

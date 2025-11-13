@@ -4,7 +4,7 @@ use crate::aoc::{
     day1solver::Day1Solver, day2solver::Day2Solver, day3solver::Day3Solver, day4solver::Day4Solver,
     day5solver::Day5Solver, day6solver::Day6Solver, day7solver::Day7Solver, day8solver::Day8Solver,
     day9solver::Day9Solver, day10solver::Day10Solver, day11solver::Day11Solver,
-    day12solver::Day12Solver, daysolver::*,
+    day12solver::Day12Solver, daysolver::*, filereader,
 };
 use std::env;
 
@@ -28,7 +28,7 @@ pub fn main() {
         _ => panic!(),
     };
 
-    let input = vec!["1", "2"];
+    let input = filereader::read_file(&format!("input/{}.txt", day));
 
     match solver.solve_part1(&input) {
         Ok(i) => println!("🛷 The result of part 1 is {i}."),
