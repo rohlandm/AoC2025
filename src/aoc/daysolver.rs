@@ -1,4 +1,6 @@
 pub trait DaySolver {
+    fn day(&self) -> u8;
+
     fn solve_part1(&self, _input: &Vec<String>) -> Result<i64, &'static str> {
         Err("😱 Part 1 not yet implemented!")
     }
