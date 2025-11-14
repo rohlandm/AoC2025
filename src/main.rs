@@ -35,10 +35,9 @@ pub fn main() {
             return;
         }
     };
+}
 
-    }
-    
-    fn run(day: u8, solver: impl DaySolver) {
+fn run(day: u8, solver: impl DaySolver) {
     let input = match filereader::read_file(&format!("input/{}.txt", day)) {
         Ok(val) => val,
         Err(e) => {
@@ -46,15 +45,15 @@ pub fn main() {
             return;
         }
     };
-    
+
     println!("🎄 Selected day: {day}");
     match solver.solve_part1(&input) {
         Ok(i) => println!("🛷 The result of part 1 is {i}."),
         Err(e) => println!("{}", e),
     }
-    
+
     match solver.solve_part2(&input) {
         Ok(i) => println!("🛷 The result of part 2 is {i}."),
         Err(e) => println!("{}", e),
     }
-    }
+}
