@@ -18,26 +18,26 @@ pub fn main() {
     };
 
     match day {
-        1 => run(Day1Solver),
-        2 => run(Day2Solver),
-        3 => run(Day3Solver),
-        4 => run(Day4Solver),
-        5 => run(Day5Solver),
-        6 => run(Day6Solver),
-        7 => run(Day7Solver),
-        8 => run(Day8Solver),
-        9 => run(Day9Solver),
-        10 => run(Day10Solver),
-        11 => run(Day11Solver),
-        12 => run(Day12Solver),
+        1 => run(day, Day1Solver),
+        2 => run(day, Day2Solver),
+        3 => run(day, Day3Solver),
+        4 => run(day, Day4Solver),
+        5 => run(day, Day5Solver),
+        6 => run(day, Day6Solver),
+        7 => run(day, Day7Solver),
+        8 => run(day, Day8Solver),
+        9 => run(day, Day9Solver),
+        10 => run(day, Day10Solver),
+        11 => run(day, Day11Solver),
+        12 => run(day, Day12Solver),
         _ => {
             eprintln!("🚨 Day argument should be between 1 and 12");
         }
     }
 }
 
-fn run(solver: impl DaySolver) {
-    let input = match filereader::read_file(&format!("input/{}.txt", solver.day())) {
+fn run(day: u8, solver: impl DaySolver) {
+    let input = match filereader::read_file(&format!("input/{}.txt", day)) {
         Ok(val) => val,
         Err(e) => {
             eprintln!("🚨 Error reading input: {}", e);
@@ -45,7 +45,7 @@ fn run(solver: impl DaySolver) {
         }
     };
 
-    println!("🎄 Selected day: {}", solver.day());
+    println!("🎄 Selected day: {day}");
     match solver.solve_part1(&input) {
         Ok(i) => println!("🛷 The result of part 1 is {i}."),
         Err(e) => println!("{}", e),

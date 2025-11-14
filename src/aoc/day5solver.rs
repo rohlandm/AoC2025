@@ -2,11 +2,7 @@ use crate::aoc::daysolver::DaySolver;
 
 pub struct Day5Solver;
 
-impl DaySolver for Day5Solver {
-    fn day(&self) -> u8 {
-        5
-    }
-}
+impl DaySolver for Day5Solver {}
 
 #[cfg(test)]
 mod tests {
