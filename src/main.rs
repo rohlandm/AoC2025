@@ -32,9 +32,8 @@ pub fn main() {
         12 => run(day, Day12Solver),
         _ => {
             eprintln!("🚨 Day argument should be between 1 and 12");
-            return;
         }
-    };
+    }
 }
 
 fn run(day: u8, solver: impl DaySolver) {
