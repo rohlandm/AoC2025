@@ -1,4 +1,5 @@
 mod aoc;
+mod solutions;
 
 use std::{env, time::Instant};
 

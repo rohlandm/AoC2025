@@ -3,11 +3,10 @@ use std::fmt::Display;
 use anyhow::bail;
 
 use daysolver::DaySolver;
+use crate::solutions::*;
 
 pub mod daysolver;
 pub mod filereader;
-
-pub mod day1solver;
 
 pub(crate) struct Day {
     day: u8,
