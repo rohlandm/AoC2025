@@ -1,4 +1,4 @@
-use crate::aoc::daysolver::DaySolver;
+use crate::aoc::DaySolver;
 
 pub struct Day2Solver;
 
