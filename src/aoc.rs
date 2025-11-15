@@ -2,8 +2,8 @@ use std::fmt::Display;
 
 use anyhow::bail;
 
-use daysolver::DaySolver;
 use crate::solutions::*;
+use daysolver::DaySolver;
 
 pub mod daysolver;
 pub mod filereader;
@@ -36,7 +36,7 @@ impl TryFrom<u8> for Day {
         let day = value;
         let solver = match value {
             1 => day1solver::Day1Solver,
-            2..12 => bail!("day {value} not yet implemented"),
+            2..13 => bail!("day {value} not yet implemented"),
             _ => bail!("🚨 Day argument should be between 1 and 12"),
         };
         let solver = Box::new(solver);
