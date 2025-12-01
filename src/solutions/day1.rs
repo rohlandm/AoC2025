@@ -1,3 +1,8 @@
+use std::{
+    ops::{Add, Div, Mul},
+    str::FromStr,
+};
+
 use anyhow::bail;
 
 use crate::aoc::DaySolver;
@@ -5,75 +10,95 @@ use crate::aoc::DaySolver;
 pub struct Solver;
 
 impl DaySolver for Solver {
-    fn solve_part1(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
-        let instructions: anyhow::Result<Vec<Instruction>> =
-            _input.iter().map(|line| parse(line)).collect();
-        let instructions = instructions?;
+    fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+        let mut state: i32 = 50;
 
-        let mut state = 50;
-        let password = instructions.iter().fold(0, |acc, instruction| {
-            match instruction {
-                Instruction::Left(amount) => state = (state - amount).rem_euclid(100),
-                Instruction::Right(amount) => state = (state + amount).rem_euclid(100),
-            };
-            if state == 0 {
-                return acc + 1;
-            }
-            acc
-        });
-
-        Ok(password)
-    }
-
-    fn solve_part2(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
-        let instructions: anyhow::Result<Vec<Instruction>> =
-            _input.iter().map(|line| parse(line)).collect();
-        let instructions = instructions?;
-
-        let mut state = 50;
-        let password = instructions
+        input
             .iter()
-            .fold(0, |acc, instruction| match instruction {
-                Instruction::Left(amount) => {
-                    let old_state = state;
-                    let rotations = amount / 100;
-                    state = (state - amount).rem_euclid(100);
-                    if state == 0 || (old_state != 0 && state >= old_state) {
-                        return acc + 1 + rotations;
-                    }
-
-                    acc + rotations
+            .map(|line| line.parse::<Instruction>())
+            .try_fold(0, |acc, instruction| {
+                state = (state + instruction?).rem_euclid(100);
+                if state == 0 {
+                    return Ok(acc + 1);
                 }
-                Instruction::Right(amount) => {
-                    let old_state = state;
-                    let rotations = amount / 100;
-                    state = (state + amount).rem_euclid(100);
-                    if state == 0 || (old_state != 0 && state <= old_state) {
-                        return acc + 1 + rotations;
-                    }
+                Ok(acc)
+            })
+    }
 
-                    acc + rotations
+    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+        let mut state = 50;
+
+        input
+            .iter()
+            .map(|line| line.parse::<Instruction>())
+            .try_fold(0i64, |acc, instruction| {
+                let instruction = instruction?;
+                let old_state = state;
+                let acc = acc + (instruction / 100) as i64;
+                state = (state + instruction).rem_euclid(100);
+
+                if state == 0 || (old_state != 0 && (state - old_state) * instruction <= 0) {
+                    return Ok(acc + 1);
                 }
-            });
 
-        Ok(password.into())
+                Ok(acc)
+            })
     }
 }
 
-fn parse(line: &str) -> anyhow::Result<Instruction> {
-    let tuple = line.split_at(1);
-    match tuple.0 {
-        "L" => Ok(Instruction::Left(tuple.1.parse()?)),
-        "R" => Ok(Instruction::Right(tuple.1.parse()?)),
-        _ => bail!("unparseable input"),
-    }
-}
-
+#[derive(Debug, Clone, Copy)]
 enum Instruction {
     Left(i32),
     Right(i32),
 }
 
+impl FromStr for Instruction {
+    type Err = anyhow::Error;
+
+    fn from_str(line: &str) -> Result<Self, Self::Err> {
+        let (direction, value) = line.split_at(1);
+        match direction {
+            "L" => Ok(Instruction::Left(value.parse()?)),
+            "R" => Ok(Instruction::Right(value.parse()?)),
+            _ => bail!("unparseable input"),
+        }
+    }
+}
+
+impl Add<Instruction> for i32 {
+    fn add(self, rhs: Instruction) -> Self::Output {
+        match rhs {
+            Instruction::Left(x) => self - x,
+            Instruction::Right(x) => self + x,
+        }
+    }
+
+    type Output = Self;
+}
+
+impl Div<i32> for Instruction {
+    type Output = i32;
+
+    fn div(self, rhs: i32) -> Self::Output {
+        let lhs = match self {
+            Instruction::Left(x) => x,
+            Instruction::Right(x) => x,
+        };
+        lhs / rhs
+    }
+}
+
+impl Mul<Instruction> for i32 {
+    type Output = i32;
+
+    fn mul(self, rhs: Instruction) -> Self::Output {
+        let rhs = match rhs {
+            Instruction::Left(x) => -x,
+            Instruction::Right(x) => x,
+        };
+        self * rhs
+    }
+}
 #[cfg(test)]
 mod tests {
     use crate::aoc::Day;
