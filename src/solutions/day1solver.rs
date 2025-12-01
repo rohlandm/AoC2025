@@ -1,15 +1,61 @@
+use anyhow::bail;
+
 use crate::aoc::DaySolver;
 
 pub struct Day1Solver;
 
-impl DaySolver for Day1Solver {}
+impl DaySolver for Day1Solver {
+    fn solve_part1(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
+        let instructions: anyhow::Result<Vec<Instruction>> =
+            _input.iter().map(|line| parse(line)).collect();
+        let instructions = instructions?;
+
+        let mut state = 50;
+        let mut acc = 0;
+
+        instructions.iter().for_each(|instruction| {
+            match instruction {
+                Instruction::Left(amount) => state = (state - amount).rem_euclid(100),
+                Instruction::Right(amount) => state = (state + amount).rem_euclid(100),
+            };
+            if state == 0 {
+                acc += 1;
+            }
+        });
+
+        Ok(acc)
+    }
+}
+
+fn parse(line: &str) -> anyhow::Result<Instruction> {
+    let tuple = line.split_at(1);
+    match tuple.0 {
+        "L" => Ok(Instruction::Left(tuple.1.parse()?)),
+        "R" => Ok(Instruction::Right(tuple.1.parse()?)),
+        _ => bail!("unparseable input"),
+    }
+}
+
+enum Instruction {
+    Left(i32),
+    Right(i32),
+}
 
 #[cfg(test)]
 mod tests {
+    use crate::aoc::Day;
 
     #[test]
     fn test_solve_part1() {
-        assert!(true)
+        let input = vec![
+            "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
+        ]
+        .into_iter()
+        .map(String::from)
+        .collect();
+
+        let day: Day = 1.try_into().unwrap();
+        assert_eq!(3, day.solve_part1(&input).unwrap());
     }
 
     #[test]
