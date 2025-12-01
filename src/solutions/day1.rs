@@ -2,9 +2,9 @@ use anyhow::bail;
 
 use crate::aoc::DaySolver;
 
-pub struct Day1Solver;
+pub struct Solver;
 
-impl DaySolver for Day1Solver {
+impl DaySolver for Solver {
     fn solve_part1(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
         let instructions: anyhow::Result<Vec<Instruction>> =
             _input.iter().map(|line| parse(line)).collect();

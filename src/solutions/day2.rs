@@ -1,8 +1,8 @@
 use crate::aoc::DaySolver;
 
-pub struct Day2Solver;
+pub struct Solver;
 
-impl DaySolver for Day2Solver {}
+impl DaySolver for Solver {}
 
 #[cfg(test)]
 mod tests {

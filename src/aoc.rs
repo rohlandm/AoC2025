@@ -42,8 +42,8 @@ impl TryFrom<u8> for Day {
     fn try_from(value: u8) -> Result<Self, Self::Error> {
         let day = value;
         let solver: Box<dyn DaySolver> = match value {
-            1 => Box::new(day1solver::Day1Solver),
-            2 => Box::new(day2solver::Day2Solver),
+            1 => Box::new(day1::Solver),
+            2 => Box::new(day2::Solver),
             3..13 => bail!("day {value} not yet implemented"),
             _ => bail!("🚨 Day argument should be between 1 and 12"),
         };
