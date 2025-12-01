@@ -25,6 +25,42 @@ impl DaySolver for Day1Solver {
 
         Ok(acc)
     }
+
+    fn solve_part2(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
+        let instructions: anyhow::Result<Vec<Instruction>> =
+            _input.iter().map(|line| parse(line)).collect();
+        let instructions = instructions?;
+
+        let mut state = 50;
+        let mut acc = 0;
+
+        instructions.iter().for_each(|instruction| {
+            match instruction {
+                Instruction::Left(amount) => {
+                    let old_state = state;
+                    let rotations = amount / 100;
+                    state = (state - amount).rem_euclid(100);
+                    if state == 0 || (old_state != 0 && state >= old_state) {
+                        acc += 1;
+                    }
+
+                    acc += rotations;
+                }
+                Instruction::Right(amount) => {
+                    let old_state = state;
+                    let rotations = amount / 100;
+                    state = (state + amount).rem_euclid(100);
+                    if state == 0 || (old_state != 0 && state <= old_state) {
+                        acc += 1;
+                    }
+
+                    acc += rotations;
+                }
+            };
+        });
+
+        Ok(acc.into())
+    }
 }
 
 fn parse(line: &str) -> anyhow::Result<Instruction> {
@@ -60,6 +96,24 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        assert!(true)
+        let input = vec![
+            "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
+        ]
+        .into_iter()
+        .map(String::from)
+        .collect();
+
+        let day: Day = 1.try_into().unwrap();
+        assert_eq!(6, day.solve_part2(&input).unwrap());
+
+        let input = vec![
+            "L68", "L30", "R148", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
+        ]
+        .into_iter()
+        .map(String::from)
+        .collect();
+
+        let day: Day = 1.try_into().unwrap();
+        assert_eq!(7, day.solve_part2(&input).unwrap());
     }
 }
