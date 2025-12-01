@@ -2,28 +2,27 @@ use anyhow::bail;
 
 use crate::aoc::DaySolver;
 
-pub struct Day1Solver;
+pub struct Solver;
 
-impl DaySolver for Day1Solver {
+impl DaySolver for Solver {
     fn solve_part1(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
         let instructions: anyhow::Result<Vec<Instruction>> =
             _input.iter().map(|line| parse(line)).collect();
         let instructions = instructions?;
 
         let mut state = 50;
-        let mut acc = 0;
-
-        instructions.iter().for_each(|instruction| {
+        let password = instructions.iter().fold(0, |acc, instruction| {
             match instruction {
                 Instruction::Left(amount) => state = (state - amount).rem_euclid(100),
                 Instruction::Right(amount) => state = (state + amount).rem_euclid(100),
             };
             if state == 0 {
-                acc += 1;
+                return acc + 1;
             }
+            acc
         });
 
-        Ok(acc)
+        Ok(password)
     }
 
     fn solve_part2(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
@@ -32,34 +31,32 @@ impl DaySolver for Day1Solver {
         let instructions = instructions?;
 
         let mut state = 50;
-        let mut acc = 0;
-
-        instructions.iter().for_each(|instruction| {
-            match instruction {
+        let password = instructions
+            .iter()
+            .fold(0, |acc, instruction| match instruction {
                 Instruction::Left(amount) => {
                     let old_state = state;
                     let rotations = amount / 100;
                     state = (state - amount).rem_euclid(100);
                     if state == 0 || (old_state != 0 && state >= old_state) {
-                        acc += 1;
+                        return acc + 1 + rotations;
                     }
 
-                    acc += rotations;
+                    acc + rotations
                 }
                 Instruction::Right(amount) => {
                     let old_state = state;
                     let rotations = amount / 100;
                     state = (state + amount).rem_euclid(100);
                     if state == 0 || (old_state != 0 && state <= old_state) {
-                        acc += 1;
+                        return acc + 1 + rotations;
                     }
 
-                    acc += rotations;
+                    acc + rotations
                 }
-            };
-        });
+            });
 
-        Ok(acc.into())
+        Ok(password.into())
     }
 }
 
