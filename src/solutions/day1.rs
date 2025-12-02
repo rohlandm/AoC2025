@@ -36,6 +36,7 @@ impl DaySolver for Solver {
     }
 }
 
+#[expect(clippy::ptr_arg, reason = "Else map fails with type mismatch")]
 fn parse(line: &String) -> anyhow::Result<i32> {
     let (direction, value) = line.split_at(1);
     let value: i32 = value.parse()?;
