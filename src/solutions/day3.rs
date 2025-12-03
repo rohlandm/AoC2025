@@ -9,8 +9,15 @@ impl DaySolver for Solver {
         Ok(input
             .iter()
             .flat_map(|line| line.parse::<BatteryBank>())
-            .map(|bank| bank.calculate_joltage())
-            .map(i64::from)
+            .map(|bank| bank.calculate_joltage(2))
+            .sum())
+    }
+
+    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+        Ok(input
+            .iter()
+            .flat_map(|line| line.parse::<BatteryBank>())
+            .map(|bank| bank.calculate_joltage(12))
             .sum())
     }
 }
@@ -21,57 +28,27 @@ struct BatteryBank {
 }
 
 impl BatteryBank {
-    fn calculate_joltage(self) -> u32 {
-        let index_of_max = self
-            .batteries
+    fn get_next_index(&self, start: usize, end: usize) -> usize {
+        self.batteries[start..self.batteries.len() - end]
             .iter()
             .enumerate()
             .fold(0, |acc, (index, battery)| {
-                if *battery > self.batteries[acc] {
+                if *battery > self.batteries[acc + start] {
                     index
                 } else {
                     acc
                 }
-            });
+            })
+            + start
+    }
 
-        let index_of_max = if index_of_max == self.batteries.len() - 1 {
-            self.batteries[..index_of_max]
-                .iter()
-                .enumerate()
-                .fold(0, |acc, (index, battery)| {
-                    if *battery > self.batteries[acc] {
-                        index
-                    } else {
-                        acc
-                    }
-                })
-        } else {
-            index_of_max
-        };
-
-        let first = self
-            .batteries
-            .get(index_of_max)
-            .expect("calculated index out of bound");
-
-        let remainder = &self.batteries[index_of_max + 1..];
-
-        let index_of_second_max = remainder
-            .iter()
-            .enumerate()
-            .fold(0, |acc, (index, battery)| {
-                if *battery > remainder[acc] {
-                    index
-                } else {
-                    acc
-                }
-            });
-
-        let second = remainder
-            .get(index_of_second_max)
-            .expect("calculated index out of bound");
-
-        first * 10u32.pow(second.ilog10() + 1) + second
+    fn calculate_joltage(&self, amount: u32) -> i64 {
+        (0..amount)
+            .rfold((0i64, 0), |(acc, start), rest| {
+                let first = self.get_next_index(start, rest as usize);
+                (acc * 10 + self.batteries[first] as i64, first + 1)
+            })
+            .0
     }
 }
 
@@ -92,7 +69,6 @@ mod tests {
     #[test]
     fn test_solve_part1() {
         let input = vec![
-            "333333333333331",
             "987654321111111",
             "811111111111119",
             "234234234234278",
@@ -103,7 +79,7 @@ mod tests {
         .collect();
 
         let day: Day = 3.try_into().unwrap();
-        assert_eq!(390, day.solve_part1(&input).unwrap());
+        assert_eq!(357, day.solve_part1(&input).unwrap());
     }
 
     #[test]
