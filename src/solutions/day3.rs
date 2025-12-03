@@ -38,9 +38,13 @@ impl BatteryBank {
             self.batteries[..index_of_max]
                 .iter()
                 .enumerate()
-                .max_by(|(_, a), (_, b)| a.cmp(b))
-                .map(|(index, _)| index)
-                .expect("Bank to small")
+                .fold(0, |acc, (index, battery)| {
+                    if *battery > self.batteries[acc] {
+                        index
+                    } else {
+                        acc
+                    }
+                })
         } else {
             index_of_max
         };
@@ -55,9 +59,13 @@ impl BatteryBank {
         let index_of_second_max = remainder
             .iter()
             .enumerate()
-            .max_by(|(_, a), (_, b)| a.cmp(b))
-            .map(|(index, _)| index)
-            .expect("Bank to small");
+            .fold(0, |acc, (index, battery)| {
+                if *battery > remainder[acc] {
+                    index
+                } else {
+                    acc
+                }
+            });
 
         let second = remainder
             .get(index_of_second_max)
