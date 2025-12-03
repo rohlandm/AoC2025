@@ -26,21 +26,13 @@ impl BatteryBank {
             .batteries
             .iter()
             .enumerate()
-            .max_by(|(_, a), (_, b)| a.cmp(b))
-            .map(|(index, _)| index)
-            .expect("Bank to small");
-
-        let index_of_max = self
-            .batteries
-            .iter()
-            .position(|value| {
-                value
-                    == self
-                        .batteries
-                        .get(index_of_max)
-                        .expect("calculated index out of bound")
-            })
-            .expect("Previously found element not found anymore");
+            .fold(0, |acc, (index, battery)| {
+                if *battery > self.batteries[acc] {
+                    index
+                } else {
+                    acc
+                }
+            });
 
         let index_of_max = if index_of_max == self.batteries.len() - 1 {
             self.batteries[..index_of_max]
@@ -108,6 +100,17 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        assert!(true)
+        let input = vec![
+            "987654321111111",
+            "811111111111119",
+            "234234234234278",
+            "818181911112111",
+        ]
+        .into_iter()
+        .map(String::from)
+        .collect();
+
+        let day: Day = 3.try_into().unwrap();
+        assert_eq!(3121910778619, day.solve_part2(&input).unwrap());
     }
 }
