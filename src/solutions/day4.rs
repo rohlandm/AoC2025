@@ -1,6 +1,6 @@
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 
-use anyhow::bail;
+use anyhow::{Ok, bail};
 
 use crate::aoc::DaySolver;
 
@@ -9,6 +9,10 @@ pub struct Solver;
 impl DaySolver for Solver {
     fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
         Ok(Grid::new(input)?.count_accessible())
+    }
+
+    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+        Ok(Grid::new(input)?.count_removable())
     }
 }
 
@@ -84,6 +88,25 @@ impl Grid {
             })
         })
     }
+
+    fn count_removable(&mut self) -> i64 {
+        let mut removed = 0i64;
+        loop {
+            let last = removed;
+            (0..self.len()).for_each(|row| {
+                (0..self[row].len()).for_each(|col| {
+                    if self.position_roll_and_accessible(row, col) {
+                        self[row][col] = Coordinate::Free;
+                        removed += 1;
+                    }
+                })
+            });
+
+            if last == removed {
+                return removed;
+            }
+        }
+    }
 }
 
 impl Deref for Grid {
@@ -91,6 +114,12 @@ impl Deref for Grid {
 
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+impl DerefMut for Grid {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
     }
 }
 
@@ -122,6 +151,23 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        assert!(true)
+        let input = vec![
+            "..@@.@@@@.",
+            "@@@.@.@.@@",
+            "@@@@@.@.@@",
+            "@.@@@@..@.",
+            "@@.@@@@.@@",
+            ".@@@@@@@.@",
+            ".@.@.@.@@@",
+            "@.@@@.@@@@",
+            ".@@@@@@@@.",
+            "@.@.@@@.@.",
+        ]
+        .into_iter()
+        .map(String::from)
+        .collect();
+
+        let day: Day = 4.try_into().unwrap();
+        assert_eq!(43, day.solve_part2(&input).unwrap());
     }
 }
