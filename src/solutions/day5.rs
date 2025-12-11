@@ -8,22 +8,7 @@ pub struct Solver;
 
 impl DaySolver for Solver {
     fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
-        let split_index = input
-            .iter()
-            .position(|x| x.is_empty())
-            .expect("Vector should contian an empty string");
-        let mut ranges = input.to_vec();
-        let values: Vec<i64> = ranges
-            .split_off(split_index)
-            .iter()
-            .skip(1)
-            .map(|x| x.parse::<i64>().expect("Values should be parseable"))
-            .collect();
-
-        let ranges: Vec<Range> = ranges
-            .iter()
-            .map(|x| x.parse::<Range>().expect("all ranges should be parseable"))
-            .collect();
+        let (ranges, values) = parse(input);
         Ok(values.iter().fold(0i64, |acc, value| {
             if ranges.iter().any(|range| range.contains_value(*value)) {
                 acc + 1
@@ -32,6 +17,39 @@ impl DaySolver for Solver {
             }
         }))
     }
+
+    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+        let (mut ranges, _) = parse(input);
+        ranges.sort_by(|a, b| a.min.cmp(&b.min));
+
+        let mut highest = 0i64;
+        Ok(ranges.iter().fold(0, |acc, range| {
+            let new = (range.max + 1 - range.min.max(highest)).max(0);
+            highest = highest.max(range.max + 1);
+            acc + new
+        }))
+    }
+}
+
+fn parse(input: &[String]) -> (Vec<Range>, Vec<i64>) {
+    let split_index = input
+        .iter()
+        .position(|x| x.is_empty())
+        .expect("Vector should contian an empty string");
+    let mut ranges = input.to_vec();
+    let values: Vec<i64> = ranges
+        .split_off(split_index)
+        .iter()
+        .skip(1)
+        .map(|x| x.parse::<i64>().expect("Values should be parseable"))
+        .collect();
+
+    let ranges: Vec<Range> = ranges
+        .iter()
+        .map(|x| x.parse::<Range>().expect("all ranges should be parseable"))
+        .collect();
+
+    (ranges, values)
 }
 
 struct Range {
@@ -83,6 +101,14 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        assert!(true)
+        let input = vec![
+            "3-5", "10-14", "16-20", "12-18", "", "1", "5", "8", "11", "17", "32",
+        ]
+        .into_iter()
+        .map(String::from)
+        .collect();
+
+        let day: Day = 5.try_into().unwrap();
+        assert_eq!(14, day.solve_part2(&input).unwrap());
     }
 }
