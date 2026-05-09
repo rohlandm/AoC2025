@@ -11,6 +11,11 @@ impl DaySolver for Solver {
         let problems = parse_input(input)?;
         Ok(problems.iter().map(|problem| problem.solve()).sum())
     }
+
+    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+        let problems = parse_input_r2l(input)?;
+        Ok(problems.iter().map(|problem| problem.solve()).sum())
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -61,12 +66,42 @@ fn parse_input(input: &[String]) -> anyhow::Result<Problems> {
     transposed.iter().map(Problem::try_from).collect()
 }
 
+fn parse_input_r2l(input: &[String]) -> anyhow::Result<Problems> {
+    ensure!(!input.is_empty(), "Empty input");
+
+    let op_row = input.last().unwrap();
+    let data_rows = &input[..input.len() - 1];
+
+    let char_cols = transpose(data_rows.iter().map(|s| s.chars().collect()).collect(), ' ')?;
+
+    let cols: Vec<String> = char_cols
+        .into_iter()
+        .map(|v| v.into_iter().filter(|c| !c.is_whitespace()).collect())
+        .collect();
+
+    cols.split(|s: &String| s.is_empty())
+        .zip(op_row.split_whitespace())
+        .map(|(numbers, op)| {
+            let nums = numbers
+                .iter()
+                .map(|s| s.parse::<i64>().map_err(|e| anyhow::anyhow!("{e}")))
+                .collect::<anyhow::Result<Vec<i64>>>()?;
+            match op {
+                "+" => Ok(Problem::Add(nums)),
+                "*" => Ok(Problem::Mul(nums)),
+                _ => bail!("Unknown operator {op}"),
+            }
+        })
+        .collect()
+}
+
 fn transpose<T>(matrix: Vec<Vec<T>>, default: T) -> anyhow::Result<Vec<Vec<T>>>
 where
     T: Clone,
 {
     ensure!(!matrix.is_empty());
-    Ok((0..matrix[0].len())
+    let max_len = matrix.iter().map(|r| r.len()).max().unwrap_or(0);
+    Ok((0..max_len)
         .map(|i| {
             matrix
                 .iter()
@@ -100,10 +135,10 @@ mod tests {
     #[test]
     fn test_solve_part1() {
         let input = vec![
-            "123 328  51 64",
-            "45 64  387 23",
-            "6 98  215 314",
-            "*   +   *   +",
+            "123 328  51 64 ",
+            " 45 64  387 23 ",
+            "  6 98  215 314",
+            "*   +   *   +  ",
         ]
         .into_iter()
         .map(String::from)
@@ -115,6 +150,17 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        assert!(true)
+        let input = vec![
+            "123 328  51 64 ",
+            " 45 64  387 23 ",
+            "  6 98  215 314",
+            "*   +   *   +  ",
+        ]
+        .into_iter()
+        .map(String::from)
+        .collect();
+
+        let day: Day = 6.try_into().unwrap();
+        assert_eq!(3263827, day.solve_part2(&input).unwrap());
     }
 }

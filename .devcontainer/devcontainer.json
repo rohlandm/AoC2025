@@ -1,0 +1,10 @@
+{
+  "name": "AoC2025",
+  "image": "mcr.microsoft.com/devcontainers/rust:1-bullseye",
+  "mounts": [
+    "source=${localEnv:HOME}/.cargo/registry,target=/usr/local/cargo/registry,type=bind"
+  ],
+  "remoteEnv": {
+    "RUST_BACKTRACE": "1"
+  }
+}
