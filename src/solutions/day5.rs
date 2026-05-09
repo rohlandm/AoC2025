@@ -20,7 +20,7 @@ impl DaySolver for Solver {
 
     fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
         let (mut ranges, _) = parse(input);
-        ranges.sort_by(|a, b| a.min.cmp(&b.min));
+        ranges.sort_by_key(|a| a.min);
 
         let mut highest = 0i64;
         Ok(ranges.iter().fold(0, |acc, range| {
