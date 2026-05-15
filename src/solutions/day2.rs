@@ -31,10 +31,8 @@ impl DaySolver for Solver {
 }
 
 fn concat(number: i64, amount: u32) -> i64 {
-    let numbers = 0..amount;
-    numbers.into_iter().fold(0, |acc, _| {
-        acc * 10_i64.pow(number.checked_ilog10().unwrap_or(0) + 1) + number
-    })
+    let digits = 10_i64.pow(number.checked_ilog10().unwrap_or(0) + 1);
+    (0..amount).fold(0, |acc, _| acc * digits + number)
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -48,23 +46,12 @@ impl FromStr for IdRange {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut split = s.split('-');
-
-        let range = IdRange {
-            lower: split
-                .next()
-                .expect("input malformated")
-                .parse()
-                .expect("Input not a number"),
-            upper: split
-                .next()
-                .expect("input malformated")
-                .parse()
-                .expect("Input not a number"),
-        };
-        match split.next() {
-            Some(_) => bail!("Input split too long"),
-            None => Ok(range),
+        let lower = split.next().ok_or_else(|| anyhow::anyhow!("input malformatted"))?.parse()?;
+        let upper = split.next().ok_or_else(|| anyhow::anyhow!("input malformatted"))?.parse()?;
+        if split.next().is_some() {
+            bail!("Input split too long");
         }
+        Ok(IdRange { lower, upper })
     }
 }
 
@@ -74,15 +61,10 @@ impl IdRange {
     }
 
     fn get_invalid_ids(self) -> Vec<i64> {
-        let half_length = (self.upper.checked_ilog10().unwrap_or(0) + 1).div_ceil(2);
-        let first_halth =
-            &self.upper.to_string()[..half_length.try_into().expect("Failed converting to usize")];
+        let half_length = (self.upper.checked_ilog10().unwrap_or(0) + 1).div_ceil(2) as usize;
+        let first_half: i64 = self.upper.to_string()[..half_length].parse().expect("Failed to re-parse number");
 
-        let first_halth: i64 = first_halth.parse().expect("Failed to re-parse number");
-        let candidates = 0_i64..=first_halth;
-
-        candidates
-            .into_iter()
+        (0_i64..=first_half)
             .map(|value| concat(value, 2))
             .filter(|id| self.in_range(*id))
             .collect()
@@ -90,29 +72,17 @@ impl IdRange {
 
     fn get_invalid_ids_extended(self) -> HashSet<i64> {
         let full_length = self.upper.checked_ilog10().unwrap_or(0) + 1;
-        let half_length = full_length.div_ceil(2);
+        let half_length = full_length.div_ceil(2) as usize;
         let lower_length = self.lower.checked_ilog10().unwrap_or(0) + 1;
-        let first_halth =
-            &self.upper.to_string()[..half_length.try_into().expect("Failed converting to usize")];
+        let first_half: i64 = self.upper.to_string()[..half_length].parse().expect("Failed to re-parse number");
 
-        let first_halth: i64 = first_halth.parse().expect("Failed to re-parse number");
-        let candidates = 0_i64..=first_halth;
-
-        candidates
-            .into_iter()
+        (0_i64..=first_half)
             .flat_map(|value| {
-                let mut set: HashSet<i64> = HashSet::new();
                 let value_length = value.checked_ilog10().unwrap_or(0) + 1;
-                let possible_range = lower_length..=full_length;
-                possible_range.into_iter().for_each(|length| {
-                    if length % value_length == 0 {
-                        let id = concat(value, length / value_length);
-                        if self.in_range(id) {
-                            set.insert(id);
-                        }
-                    }
-                });
-                set
+                (lower_length..=full_length)
+                    .filter(move |length| length % value_length == 0)
+                    .map(move |length| concat(value, length / value_length))
+                    .filter(move |&id| self.in_range(id))
             })
             .collect()
     }

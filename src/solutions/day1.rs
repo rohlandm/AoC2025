@@ -1,7 +1,4 @@
-use std::{
-    ops::{Add, Div, Mul},
-    str::FromStr,
-};
+use std::str::FromStr;
 
 use anyhow::bail;
 
@@ -11,38 +8,28 @@ pub struct Solver;
 
 impl DaySolver for Solver {
     fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
-        let mut state: i32 = 50;
-
         input
             .iter()
             .map(|line| line.parse::<Instruction>())
-            .try_fold(0, |acc, instruction| {
-                state = (state + instruction?).rem_euclid(100);
-                if state == 0 {
-                    return Ok(acc + 1);
-                }
-                Ok(acc)
+            .try_fold((0i64, 50i32), |(acc, state), instruction| {
+                let state = (state + instruction?.delta()).rem_euclid(100);
+                Ok((acc + (state == 0) as i64, state))
             })
+            .map(|(acc, _)| acc)
     }
 
     fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
-        let mut state = 50;
-
         input
             .iter()
             .map(|line| line.parse::<Instruction>())
-            .try_fold(0i64, |acc, instruction| {
-                let instruction = instruction?;
-                let old_state = state;
-                let acc = acc + (instruction / 100) as i64;
-                state = (state + instruction).rem_euclid(100);
-
-                if state == 0 || (old_state != 0 && (state - old_state) * instruction <= 0) {
-                    return Ok(acc + 1);
-                }
-
-                Ok(acc)
+            .try_fold((0i64, 50i32), |(acc, state), instruction| {
+                let delta = instruction?.delta();
+                let new_state = (state + delta).rem_euclid(100);
+                let acc = acc + (delta.abs() / 100) as i64;
+                let hit = new_state == 0 || (state != 0 && (new_state - state) * delta <= 0);
+                Ok((acc + hit as i64, new_state))
             })
+            .map(|(acc, _)| acc)
     }
 }
 
@@ -50,6 +37,15 @@ impl DaySolver for Solver {
 enum Instruction {
     Left(i32),
     Right(i32),
+}
+
+impl Instruction {
+    fn delta(self) -> i32 {
+        match self {
+            Instruction::Left(x) => -x,
+            Instruction::Right(x) => x,
+        }
+    }
 }
 
 impl FromStr for Instruction {
@@ -65,40 +61,6 @@ impl FromStr for Instruction {
     }
 }
 
-impl Add<Instruction> for i32 {
-    fn add(self, rhs: Instruction) -> Self::Output {
-        match rhs {
-            Instruction::Left(x) => self - x,
-            Instruction::Right(x) => self + x,
-        }
-    }
-
-    type Output = Self;
-}
-
-impl Div<i32> for Instruction {
-    type Output = i32;
-
-    fn div(self, rhs: i32) -> Self::Output {
-        let lhs = match self {
-            Instruction::Left(x) => x,
-            Instruction::Right(x) => x,
-        };
-        lhs / rhs
-    }
-}
-
-impl Mul<Instruction> for i32 {
-    type Output = i32;
-
-    fn mul(self, rhs: Instruction) -> Self::Output {
-        let rhs = match rhs {
-            Instruction::Left(x) => -x,
-            Instruction::Right(x) => x,
-        };
-        self * rhs
-    }
-}
 #[cfg(test)]
 mod tests {
     use crate::aoc::Day;
