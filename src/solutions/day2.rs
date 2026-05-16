@@ -7,7 +7,7 @@ use crate::aoc::DaySolver;
 pub struct Solver;
 
 impl DaySolver for Solver {
-    fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part1(&self, input: &[String]) -> anyhow::Result<i64> {
         input
             .iter()
             .flat_map(|line| line.split(','))
@@ -18,7 +18,7 @@ impl DaySolver for Solver {
             })
     }
 
-    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part2(&self, input: &[String]) -> anyhow::Result<i64> {
         input
             .iter()
             .flat_map(|line| line.split(','))

@@ -7,10 +7,10 @@ use crate::solutions::*;
 pub mod filereader;
 
 pub trait DaySolver {
-    fn solve_part1(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part1(&self, _input: &[String]) -> anyhow::Result<i64> {
         bail!("😱 Part 1 not yet implemented!")
     }
-    fn solve_part2(&self, _input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part2(&self, _input: &[String]) -> anyhow::Result<i64> {
         bail!("😱 Part 2 not yet implemented!")
     }
 }
@@ -40,7 +40,6 @@ impl TryFrom<u8> for Day {
     type Error = anyhow::Error;
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
-        let day = value;
         let solver: Box<dyn DaySolver> = match value {
             1 => Box::new(day1::Solver),
             2 => Box::new(day2::Solver),
@@ -48,9 +47,10 @@ impl TryFrom<u8> for Day {
             4 => Box::new(day4::Solver),
             5 => Box::new(day5::Solver),
             6 => Box::new(day6::Solver),
-            7..=12 => bail!("day {value} not yet implemented"),
+            7 => Box::new(day7::Solver),
+            8..=12 => bail!("day {value} not yet implemented"),
             _ => bail!("🚨 Day argument should be between 1 and 12"),
         };
-        Ok(Day { day, solver })
+        Ok(Day { day: value, solver })
     }
 }
