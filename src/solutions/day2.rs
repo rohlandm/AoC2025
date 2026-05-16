@@ -100,29 +100,24 @@ mod tests {
         assert_eq!(12121212, concat(12, 4));
     }
 
-    #[test]
-    fn test_solve_part1() {
-        let input: Vec<String> = vec![
+    fn test_input() -> Vec<String> {
+        vec![
             "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124",
         ]
         .into_iter()
         .map(String::from)
-        .collect();
+        .collect()
+    }
 
+    #[test]
+    fn test_solve_part1() {
         let day: Day = 2.try_into().unwrap();
-        assert_eq!(1227775554, day.solve_part1(&input).unwrap());
+        assert_eq!(1227775554, day.solve_part1(&test_input()).unwrap());
     }
 
     #[test]
     fn test_solve_part2() {
-        let input: Vec<String> = vec![
-            "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 2.try_into().unwrap();
-        assert_eq!(4174379265, day.solve_part2(&input).unwrap());
+        assert_eq!(4174379265, day.solve_part2(&test_input()).unwrap());
     }
 }

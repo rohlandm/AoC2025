@@ -123,9 +123,8 @@ impl DerefMut for Grid {
 mod tests {
     use crate::aoc::Day;
 
-    #[test]
-    fn test_solve_part1() {
-        let input: Vec<String> = vec![
+    fn test_input() -> Vec<String> {
+        vec![
             "..@@.@@@@.",
             "@@@.@.@.@@",
             "@@@@@.@.@@",
@@ -139,31 +138,18 @@ mod tests {
         ]
         .into_iter()
         .map(String::from)
-        .collect();
+        .collect()
+    }
 
+    #[test]
+    fn test_solve_part1() {
         let day: Day = 4.try_into().unwrap();
-        assert_eq!(13, day.solve_part1(&input).unwrap());
+        assert_eq!(13, day.solve_part1(&test_input()).unwrap());
     }
 
     #[test]
     fn test_solve_part2() {
-        let input: Vec<String> = vec![
-            "..@@.@@@@.",
-            "@@@.@.@.@@",
-            "@@@@@.@.@@",
-            "@.@@@@..@.",
-            "@@.@@@@.@@",
-            ".@@@@@@@.@",
-            ".@.@.@.@@@",
-            "@.@@@.@@@@",
-            ".@@@@@@@@.",
-            "@.@.@@@.@.",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 4.try_into().unwrap();
-        assert_eq!(43, day.solve_part2(&input).unwrap());
+        assert_eq!(43, day.solve_part2(&test_input()).unwrap());
     }
 }

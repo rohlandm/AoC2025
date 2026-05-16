@@ -82,9 +82,8 @@ fn count_splits(grid: &[Vec<char>], start_row: usize, start_col: usize) -> i64 {
 mod tests {
     use crate::aoc::Day;
 
-    #[test]
-    fn test_solve_part1() {
-        let input: Vec<String> = vec![
+    fn test_input() -> Vec<String> {
+        vec![
             ".......S.......",
             "...............",
             ".......^.......",
@@ -104,37 +103,18 @@ mod tests {
         ]
         .into_iter()
         .map(String::from)
-        .collect();
+        .collect()
+    }
 
+    #[test]
+    fn test_solve_part1() {
         let day: Day = 7.try_into().unwrap();
-        assert_eq!(21, day.solve_part1(&input).unwrap());
+        assert_eq!(21, day.solve_part1(&test_input()).unwrap());
     }
 
     #[test]
     fn test_solve_part2() {
-        let input: Vec<String> = vec![
-            ".......S.......",
-            "...............",
-            ".......^.......",
-            "...............",
-            "......^.^......",
-            "...............",
-            ".....^.^.^.....",
-            "...............",
-            "....^.^...^....",
-            "...............",
-            "...^.^...^.^...",
-            "...............",
-            "..^...^.....^..",
-            "...............",
-            ".^.^.^.^.^...^.",
-            "...............",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 7.try_into().unwrap();
-        assert_eq!(40, day.solve_part2(&input).unwrap());
+        assert_eq!(40, day.solve_part2(&test_input()).unwrap());
     }
 }
