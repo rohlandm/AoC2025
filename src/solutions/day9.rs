@@ -77,6 +77,8 @@ fn parse(input: &[String]) -> anyhow::Result<Vec<(i64, i64)>> {
 
 #[cfg(test)]
 mod tests {
+    use crate::aoc::Day;
+
     fn test_input() -> Vec<String> {
         vec![
             "7,1",
@@ -95,13 +97,13 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let day: crate::aoc::Day = 9.try_into().unwrap();
+        let day: Day = 9.try_into().unwrap();
         assert_eq!(50, day.solve_part1(&test_input()).unwrap());
     }
 
     #[test]
     fn test_solve_part2() {
-        let day: crate::aoc::Day = 9.try_into().unwrap();
+        let day: Day = 9.try_into().unwrap();
         assert_eq!(24, day.solve_part2(&test_input()).unwrap());
     }
 }
