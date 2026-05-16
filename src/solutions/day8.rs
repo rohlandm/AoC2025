@@ -1,3 +1,5 @@
+use std::ops::ControlFlow;
+
 use anyhow::Context;
 
 use crate::aoc::DaySolver;
@@ -6,36 +8,45 @@ pub struct Solver;
 
 impl DaySolver for Solver {
     fn solve_part1(&self, input: &[String]) -> anyhow::Result<i64> {
-        connect(input, 1000)
+        let (sizes, _) = build_circuits(input, Some(1000))?;
+        Ok(sizes.iter().take(3).product())
     }
 
     fn solve_part2(&self, input: &[String]) -> anyhow::Result<i64> {
-        last_connection(input)
+        let (_, (xa, xb)) = build_circuits(input, None)?;
+        Ok(xa * xb)
     }
 }
 
-pub(crate) fn connect(input: &[String], pairs: usize) -> anyhow::Result<i64> {
+pub(crate) fn build_circuits(
+    input: &[String],
+    pair_limit: Option<usize>,
+) -> anyhow::Result<(Vec<i64>, (i64, i64))> {
     let points = parse(input)?;
     let n = points.len();
-    let mut uf = UnionFind::new(n);
-    sorted_pairs(&points).into_iter().take(pairs).for_each(|(_, i, j)| { uf.union(i, j); });
+
+    let (mut uf, last_x, _) = match sorted_pairs(&points)
+        .into_iter()
+        .take(pair_limit.unwrap_or(usize::MAX))
+        .try_fold(
+            (UnionFind::new(n), (0i64, 0i64), 0usize),
+            |(mut uf, mut last_x, mut merges), (_, i, j)| {
+                if uf.union(i, j) {
+                    merges += 1;
+                    last_x = (points[i][0], points[j][0]);
+                    if pair_limit.is_none() && merges == n - 1 {
+                        return ControlFlow::Break((uf, last_x, merges));
+                    }
+                }
+                ControlFlow::Continue((uf, last_x, merges))
+            },
+        ) {
+        ControlFlow::Break(s) | ControlFlow::Continue(s) => s,
+    };
+
     let mut sizes = uf.circuit_sizes();
     sizes.sort_unstable_by(|a, b| b.cmp(a));
-    Ok(sizes.iter().take(3).product())
-}
-
-pub(crate) fn last_connection(input: &[String]) -> anyhow::Result<i64> {
-    let points = parse(input)?;
-    let n = points.len();
-    sorted_pairs(&points)
-        .into_iter()
-        .scan((UnionFind::new(n), 0usize), |(uf, merges), (_, i, j)| {
-            if uf.union(i, j) { *merges += 1; }
-            Some((i, j, *merges))
-        })
-        .find(|&(_, _, count)| count == n - 1)
-        .map(|(i, j, _)| points[i][0] * points[j][0])
-        .context("no single circuit formed")
+    Ok((sizes, last_x))
 }
 
 fn sorted_pairs(points: &[[i64; 3]]) -> Vec<(i64, usize, usize)> {
@@ -104,7 +115,8 @@ impl UnionFind {
 
 #[cfg(test)]
 mod tests {
-    use super::{connect, last_connection};
+    use super::build_circuits;
+
     fn test_input() -> Vec<String> {
         vec![
             "162,817,812",
@@ -135,11 +147,13 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        assert_eq!(40, connect(&test_input(), 10).unwrap());
+        let (sizes, _) = build_circuits(&test_input(), Some(10)).unwrap();
+        assert_eq!(40, sizes.iter().take(3).product::<i64>());
     }
 
     #[test]
     fn test_solve_part2() {
-        assert_eq!(25272, last_connection(&test_input()).unwrap());
+        let (_, (xa, xb)) = build_circuits(&test_input(), None).unwrap();
+        assert_eq!(25272, xa * xb);
     }
 }
