@@ -32,13 +32,10 @@ impl BatteryBank {
         self.batteries[start..self.batteries.len() - end]
             .iter()
             .enumerate()
-            .fold(0, |acc, (index, battery)| {
-                if *battery > self.batteries[acc + start] {
-                    index
-                } else {
-                    acc
-                }
+            .fold((0usize, 0u32), |(best_i, best_v), (i, &v)| {
+                if v > best_v { (i, v) } else { (best_i, best_v) }
             })
+            .0
             + start
     }
 
@@ -57,7 +54,7 @@ impl FromStr for BatteryBank {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(BatteryBank {
-            batteries: s.chars().flat_map(|c| c.to_digit(10)).collect(),
+            batteries: s.chars().filter_map(|c| c.to_digit(10)).collect(),
         })
     }
 }

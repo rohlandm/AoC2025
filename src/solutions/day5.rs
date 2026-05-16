@@ -9,25 +9,22 @@ pub struct Solver;
 impl DaySolver for Solver {
     fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
         let (ranges, values) = parse(input);
-        Ok(values.iter().fold(0i64, |acc, value| {
-            if ranges.iter().any(|range| range.contains_value(*value)) {
-                acc + 1
-            } else {
-                acc
-            }
-        }))
+        Ok(values
+            .iter()
+            .filter(|&&value| ranges.iter().any(|range| range.contains_value(value)))
+            .count() as i64)
     }
 
     fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
         let (mut ranges, _) = parse(input);
         ranges.sort_by_key(|a| a.min);
-
-        let mut highest = 0i64;
-        Ok(ranges.iter().fold(0, |acc, range| {
-            let new = (range.max + 1 - range.min.max(highest)).max(0);
-            highest = highest.max(range.max + 1);
-            acc + new
-        }))
+        Ok(ranges
+            .iter()
+            .fold((0i64, 0i64), |(acc, highest), range| {
+                let new = (range.max + 1 - range.min.max(highest)).max(0);
+                (acc + new, highest.max(range.max + 1))
+            })
+            .0)
     }
 }
 
@@ -35,18 +32,16 @@ fn parse(input: &[String]) -> (Vec<Range>, Vec<i64>) {
     let split_index = input
         .iter()
         .position(|x| x.is_empty())
-        .expect("Vector should contian an empty string");
-    let mut ranges = input.to_vec();
-    let values: Vec<i64> = ranges
-        .split_off(split_index)
+        .expect("Vector should contain an empty string");
+
+    let ranges = input[..split_index]
         .iter()
-        .skip(1)
-        .map(|x| x.parse::<i64>().expect("Values should be parseable"))
+        .map(|x| x.parse().expect("all ranges should be parseable"))
         .collect();
 
-    let ranges: Vec<Range> = ranges
+    let values = input[split_index + 1..]
         .iter()
-        .map(|x| x.parse::<Range>().expect("all ranges should be parseable"))
+        .map(|x| x.parse().expect("Values should be parseable"))
         .collect();
 
     (ranges, values)
@@ -59,7 +54,7 @@ struct Range {
 
 impl Range {
     fn contains_value(&self, value: i64) -> bool {
-        self.min <= value && self.max >= value
+        (self.min..=self.max).contains(&value)
     }
 }
 
@@ -67,18 +62,10 @@ impl FromStr for Range {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut split = s.split("-");
-
-        Ok(Range {
-            min: split
-                .next()
-                .map(|x| x.parse())
-                .expect("unparseable range")?,
-            max: split
-                .next()
-                .map(|x| x.parse())
-                .expect("unparseable range")?,
-        })
+        let mut split = s.split('-');
+        let min = split.next().ok_or_else(|| anyhow::anyhow!("unparseable range"))?.parse()?;
+        let max = split.next().ok_or_else(|| anyhow::anyhow!("unparseable range"))?.parse()?;
+        Ok(Range { min, max })
     }
 }
 

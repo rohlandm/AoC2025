@@ -59,8 +59,8 @@ impl Grid {
         match coordinate {
             Coordinate::Roll => {
                 let mut neighbors = 0;
-                let left = if row > 0 { row - 1 } else { 0 };
-                let above = if col > 0 { col - 1 } else { 0 };
+                let left = row.saturating_sub(1);
+                let above = col.saturating_sub(1);
 
                 (left..row + 2).for_each(|row_idx| {
                     (above..col + 2).for_each(|col_idx| {
@@ -77,16 +77,12 @@ impl Grid {
         }
     }
 
-    fn count_accessible(self) -> i64 {
-        self.iter().enumerate().fold(0, |acc, (row_index, value)| {
-            acc + value.iter().enumerate().fold(0, |acc, (col_index, _)| {
-                if self.position_roll_and_accessible(row_index, col_index) {
-                    acc + 1
-                } else {
-                    acc
-                }
-            })
-        })
+    fn count_accessible(&self) -> i64 {
+        self.iter()
+            .enumerate()
+            .flat_map(|(row, cols)| cols.iter().enumerate().map(move |(col, _)| (row, col)))
+            .filter(|&(row, col)| self.position_roll_and_accessible(row, col))
+            .count() as i64
     }
 
     fn count_removable(&mut self) -> i64 {

@@ -37,15 +37,15 @@ impl TryFrom<&Vec<&str>> for Problem {
     type Error = anyhow::Error;
 
     fn try_from(value: &Vec<&str>) -> Result<Self, Self::Error> {
-        match value.last() {
-            Some(op) => {
-                let numbers = &value[0..value.len() - 1]
+        match value.split_last() {
+            Some((op, rest)) => {
+                let numbers = rest
                     .iter()
-                    .map(|s| s.parse::<i64>().expect("unparseable number"))
-                    .collect::<Vec<i64>>();
+                    .map(|s| s.parse::<i64>())
+                    .collect::<Result<Vec<_>, _>>()?;
                 match *op {
-                    "+" => Ok(Problem::Add(numbers.to_vec())),
-                    "*" => Ok(Problem::Mul(numbers.to_vec())),
+                    "+" => Ok(Problem::Add(numbers)),
+                    "*" => Ok(Problem::Mul(numbers)),
                     _ => bail!("Unknown operator"),
                 }
             }
@@ -67,10 +67,7 @@ fn parse_input(input: &[String]) -> anyhow::Result<Problems> {
 }
 
 fn parse_input_r2l(input: &[String]) -> anyhow::Result<Problems> {
-    ensure!(!input.is_empty(), "Empty input");
-
-    let op_row = input.last().unwrap();
-    let data_rows = &input[..input.len() - 1];
+    let (op_row, data_rows) = input.split_last().ok_or_else(|| anyhow::anyhow!("Empty input"))?;
 
     let char_cols = transpose(data_rows.iter().map(|s| s.chars().collect()).collect(), ' ')?;
 
@@ -84,8 +81,8 @@ fn parse_input_r2l(input: &[String]) -> anyhow::Result<Problems> {
         .map(|(numbers, op)| {
             let nums = numbers
                 .iter()
-                .map(|s| s.parse::<i64>().map_err(|e| anyhow::anyhow!("{e}")))
-                .collect::<anyhow::Result<Vec<i64>>>()?;
+                .map(|s| s.parse::<i64>())
+                .collect::<Result<Vec<_>, _>>()?;
             match op {
                 "+" => Ok(Problem::Add(nums)),
                 "*" => Ok(Problem::Mul(nums)),
