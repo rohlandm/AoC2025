@@ -48,7 +48,9 @@ impl DaySolver for Solver {
     }
 }
 
-fn edges(points: &[(i64, i64)]) -> (Vec<(i64, i64, i64)>, Vec<(i64, i64, i64)>) {
+type Edges = Vec<(i64, i64, i64)>;
+
+fn edges(points: &[(i64, i64)]) -> (Edges, Edges) {
     let n = points.len();
     let (v, h): (Vec<_>, Vec<_>) = (0..n)
         .map(|i| {
