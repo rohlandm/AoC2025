@@ -65,37 +65,29 @@ impl FromStr for Instruction {
 mod tests {
     use crate::aoc::Day;
 
+    fn test_input() -> Vec<String> {
+        vec!["L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82"]
+            .into_iter()
+            .map(String::from)
+            .collect()
+    }
+
     #[test]
     fn test_solve_part1() {
-        let input: Vec<String> = vec![
-            "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 1.try_into().unwrap();
-        assert_eq!(3, day.solve_part1(&input).unwrap());
+        assert_eq!(3, day.solve_part1(&test_input()).unwrap());
     }
 
     #[test]
     fn test_solve_part2() {
-        let input: Vec<String> = vec![
-            "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 1.try_into().unwrap();
-        assert_eq!(6, day.solve_part2(&input).unwrap());
+        assert_eq!(6, day.solve_part2(&test_input()).unwrap());
 
-        let input: Vec<String> = vec![
-            "L68", "L30", "R148", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
+        let input: Vec<String> =
+            vec!["L68", "L30", "R148", "L5", "R60", "L55", "L1", "L99", "R14", "L82"]
+                .into_iter()
+                .map(String::from)
+                .collect();
 
         let day: Day = 1.try_into().unwrap();
         assert_eq!(7, day.solve_part2(&input).unwrap());

@@ -73,29 +73,22 @@ impl FromStr for Range {
 mod tests {
     use crate::aoc::Day;
 
+    fn test_input() -> Vec<String> {
+        vec!["3-5", "10-14", "16-20", "12-18", "", "1", "5", "8", "11", "17", "32"]
+            .into_iter()
+            .map(String::from)
+            .collect()
+    }
+
     #[test]
     fn test_solve_part1() {
-        let input: Vec<String> = vec![
-            "3-5", "10-14", "16-20", "12-18", "", "1", "5", "8", "11", "17", "32",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 5.try_into().unwrap();
-        assert_eq!(3, day.solve_part1(&input).unwrap());
+        assert_eq!(3, day.solve_part1(&test_input()).unwrap());
     }
 
     #[test]
     fn test_solve_part2() {
-        let input: Vec<String> = vec![
-            "3-5", "10-14", "16-20", "12-18", "", "1", "5", "8", "11", "17", "32",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 5.try_into().unwrap();
-        assert_eq!(14, day.solve_part2(&input).unwrap());
+        assert_eq!(14, day.solve_part2(&test_input()).unwrap());
     }
 }

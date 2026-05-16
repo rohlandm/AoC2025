@@ -129,9 +129,8 @@ impl Deref for Problems {
 mod tests {
     use crate::aoc::Day;
 
-    #[test]
-    fn test_solve_part1() {
-        let input: Vec<String> = vec![
+    fn test_input() -> Vec<String> {
+        vec![
             "123 328  51 64 ",
             " 45 64  387 23 ",
             "  6 98  215 314",
@@ -139,25 +138,18 @@ mod tests {
         ]
         .into_iter()
         .map(String::from)
-        .collect();
+        .collect()
+    }
 
+    #[test]
+    fn test_solve_part1() {
         let day: Day = 6.try_into().unwrap();
-        assert_eq!(4277556, day.solve_part1(&input).unwrap());
+        assert_eq!(4277556, day.solve_part1(&test_input()).unwrap());
     }
 
     #[test]
     fn test_solve_part2() {
-        let input: Vec<String> = vec![
-            "123 328  51 64 ",
-            " 45 64  387 23 ",
-            "  6 98  215 314",
-            "*   +   *   +  ",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 6.try_into().unwrap();
-        assert_eq!(3263827, day.solve_part2(&input).unwrap());
+        assert_eq!(3263827, day.solve_part2(&test_input()).unwrap());
     }
 }

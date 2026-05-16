@@ -63,9 +63,8 @@ impl FromStr for BatteryBank {
 mod tests {
     use crate::aoc::Day;
 
-    #[test]
-    fn test_solve_part1() {
-        let input: Vec<String> = vec![
+    fn test_input() -> Vec<String> {
+        vec![
             "987654321111111",
             "811111111111119",
             "234234234234278",
@@ -73,25 +72,18 @@ mod tests {
         ]
         .into_iter()
         .map(String::from)
-        .collect();
+        .collect()
+    }
 
+    #[test]
+    fn test_solve_part1() {
         let day: Day = 3.try_into().unwrap();
-        assert_eq!(357, day.solve_part1(&input).unwrap());
+        assert_eq!(357, day.solve_part1(&test_input()).unwrap());
     }
 
     #[test]
     fn test_solve_part2() {
-        let input: Vec<String> = vec![
-            "987654321111111",
-            "811111111111119",
-            "234234234234278",
-            "818181911112111",
-        ]
-        .into_iter()
-        .map(String::from)
-        .collect();
-
         let day: Day = 3.try_into().unwrap();
-        assert_eq!(3121910778619, day.solve_part2(&input).unwrap());
+        assert_eq!(3121910778619, day.solve_part2(&test_input()).unwrap());
     }
 }
