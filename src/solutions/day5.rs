@@ -75,7 +75,7 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "3-5", "10-14", "16-20", "12-18", "", "1", "5", "8", "11", "17", "32",
         ]
         .into_iter()
@@ -88,7 +88,7 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "3-5", "10-14", "16-20", "12-18", "", "1", "5", "8", "11", "17", "32",
         ]
         .into_iter()

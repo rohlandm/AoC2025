@@ -64,8 +64,8 @@ fn count_splits(grid: &[Vec<char>], start_row: usize, start_col: usize) -> i64 {
     let mut stack = vec![(start_row, start_col)];
 
     while let Some((row, col)) = stack.pop() {
-        if let Some(splitter_row) = next_splitter(grid, row, col) {
-            if visited.insert((splitter_row, col)) {
+        if let Some(splitter_row) = next_splitter(grid, row, col)
+            && visited.insert((splitter_row, col)) {
                 stack.extend(
                     [col.checked_sub(1), Some(col + 1).filter(|&c| c < width)]
                         .into_iter()
@@ -73,7 +73,6 @@ fn count_splits(grid: &[Vec<char>], start_row: usize, start_col: usize) -> i64 {
                         .map(|c| (splitter_row, c)),
                 );
             }
-        }
     }
 
     visited.len() as i64
@@ -85,7 +84,7 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let input = vec![
+        let input: Vec<String> = vec![
             ".......S.......",
             "...............",
             ".......^.......",
@@ -113,7 +112,7 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        let input = vec![
+        let input: Vec<String> = vec![
             ".......S.......",
             "...............",
             ".......^.......",

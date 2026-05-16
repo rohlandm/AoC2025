@@ -125,7 +125,7 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "..@@.@@@@.",
             "@@@.@.@.@@",
             "@@@@@.@.@@",
@@ -147,7 +147,7 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "..@@.@@@@.",
             "@@@.@.@.@@",
             "@@@@@.@.@@",

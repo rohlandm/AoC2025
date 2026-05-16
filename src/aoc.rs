@@ -21,11 +21,11 @@ pub(crate) struct Day {
 }
 
 impl Day {
-    pub fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    pub fn solve_part1(&self, input: &[String]) -> anyhow::Result<i64> {
         self.solver.solve_part1(input)
     }
 
-    pub fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    pub fn solve_part2(&self, input: &[String]) -> anyhow::Result<i64> {
         self.solver.solve_part2(input)
     }
 }

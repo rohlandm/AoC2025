@@ -131,7 +131,7 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "123 328  51 64 ",
             " 45 64  387 23 ",
             "  6 98  215 314",
@@ -147,7 +147,7 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "123 328  51 64 ",
             " 45 64  387 23 ",
             "  6 98  215 314",

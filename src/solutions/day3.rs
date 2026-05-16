@@ -65,7 +65,7 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "987654321111111",
             "811111111111119",
             "234234234234278",
@@ -81,7 +81,7 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "987654321111111",
             "811111111111119",
             "234234234234278",
