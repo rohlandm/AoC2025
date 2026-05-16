@@ -7,7 +7,7 @@ use crate::aoc::DaySolver;
 pub struct Solver;
 
 impl DaySolver for Solver {
-    fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part1(&self, input: &[String]) -> anyhow::Result<i64> {
         input
             .iter()
             .map(|line| line.parse::<Instruction>())
@@ -18,7 +18,7 @@ impl DaySolver for Solver {
             .map(|(acc, _)| acc)
     }
 
-    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part2(&self, input: &[String]) -> anyhow::Result<i64> {
         input
             .iter()
             .map(|line| line.parse::<Instruction>())
@@ -67,7 +67,7 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
         ]
         .into_iter()
@@ -80,7 +80,7 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
         ]
         .into_iter()
@@ -90,7 +90,7 @@ mod tests {
         let day: Day = 1.try_into().unwrap();
         assert_eq!(6, day.solve_part2(&input).unwrap());
 
-        let input = vec![
+        let input: Vec<String> = vec![
             "L68", "L30", "R148", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
         ]
         .into_iter()

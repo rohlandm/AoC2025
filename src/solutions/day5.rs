@@ -7,7 +7,7 @@ use crate::aoc::DaySolver;
 pub struct Solver;
 
 impl DaySolver for Solver {
-    fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part1(&self, input: &[String]) -> anyhow::Result<i64> {
         let (ranges, values) = parse(input);
         Ok(values
             .iter()
@@ -15,7 +15,7 @@ impl DaySolver for Solver {
             .count() as i64)
     }
 
-    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part2(&self, input: &[String]) -> anyhow::Result<i64> {
         let (mut ranges, _) = parse(input);
         ranges.sort_by_key(|a| a.min);
         Ok(ranges
@@ -75,7 +75,7 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "3-5", "10-14", "16-20", "12-18", "", "1", "5", "8", "11", "17", "32",
         ]
         .into_iter()
@@ -88,7 +88,7 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "3-5", "10-14", "16-20", "12-18", "", "1", "5", "8", "11", "17", "32",
         ]
         .into_iter()

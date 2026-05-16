@@ -5,7 +5,7 @@ use crate::aoc::DaySolver;
 pub struct Solver;
 
 impl DaySolver for Solver {
-    fn solve_part1(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part1(&self, input: &[String]) -> anyhow::Result<i64> {
         Ok(input
             .iter()
             .flat_map(|line| line.parse::<BatteryBank>())
@@ -13,7 +13,7 @@ impl DaySolver for Solver {
             .sum())
     }
 
-    fn solve_part2(&self, input: &Vec<String>) -> anyhow::Result<i64> {
+    fn solve_part2(&self, input: &[String]) -> anyhow::Result<i64> {
         Ok(input
             .iter()
             .flat_map(|line| line.parse::<BatteryBank>())
@@ -65,7 +65,7 @@ mod tests {
 
     #[test]
     fn test_solve_part1() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "987654321111111",
             "811111111111119",
             "234234234234278",
@@ -81,7 +81,7 @@ mod tests {
 
     #[test]
     fn test_solve_part2() {
-        let input = vec![
+        let input: Vec<String> = vec![
             "987654321111111",
             "811111111111119",
             "234234234234278",
